@@ -5,12 +5,17 @@ from django.conf import settings
 def index(request):
 	return render(request,'index.html')
 
+def single(request):
+	return render(request, 'index.html')
+
 def contact(request):
-	Contact.objects.create(
-		name=request.POST['name'],
-		email=request.POST['email'],
-		subject=request.POST['subject'],
-		message=request.POST['message'],
+	if request.method == 'POST':
+		Contact.objects.create(
+			name=request.POST.get('name', ''),
+			email=request.POST.get('email', ''),
+			subject=request.POST.get('subject', ''),
+			message=request.POST.get('message', ''),
 		)
-	msg="contact saved succesfully.will reach you very soon "
-	return render(request,'index.html',{'msg':msg})
+		msg = "Contact saved successfully. I will reach out to you very soon."
+		return render(request, 'index.html', {'msg': msg})
+	return redirect('index')
